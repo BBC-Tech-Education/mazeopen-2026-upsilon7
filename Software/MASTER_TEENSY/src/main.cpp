@@ -817,6 +817,7 @@ void state_black_tile() {
      if(!(target_dis_bad[BACK_BAD])) { // back short are valid
       int16_t distance_to_move = ((lrfs.get_side_value(LRF_BACK_SIDE) % 300) - ((300 - ROBOT_LENGTH)/2));
       target_distance_back = lrfs.get_side_value(LRF_BACK_SIDE) - distance_to_move;
+      target_distance_back = max(target_distance_back, 60);
 
     } else if(!(target_dis_bad[FRONT_BAD])) { // front short are valid
       int16_t distance_to_move = 300 - (lrfs.get_side_value(LRF_FRONT_SHORT_SIDE) % 300) + (300 - ROBOT_LENGTH)/2;
@@ -857,8 +858,9 @@ void state_black_tile() {
     }
   } 
   
+  
   // ---------------- Function ----------------
-  movement_forward(-50);
+  movement_forward(-100);
 }
 
 
