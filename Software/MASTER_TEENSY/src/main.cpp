@@ -2,7 +2,6 @@
 
 // Things to remrber
 // led and package at same time
-// Check ramp i looking good
 // Limit switches
 // Movement better
 // Fix Black Tile
@@ -431,9 +430,6 @@ void state_forward() {
     delay(200);
     lrfs.update();
 
-    delay(200);
-    lrfs.update();
-
     if (victim_stuff()) {
       return;
     }
@@ -443,16 +439,17 @@ void state_forward() {
     target_dis_bad[BACK_BAD] = 0;
     target_dis_bad[LONG_BAD] = 0;
 
-    if(lrfs.get_side_value(LRF_FRONT_SHORT_SIDE) >= (LRF_SHORT_MAX_DIST - 100)) {
+    if((lrfs.get_value(0) >= (LRF_SHORT_MAX_DIST - 100))||(lrfs.get_value(1) >= (LRF_SHORT_MAX_DIST - 100))) {
       target_dis_bad[FRONT_BAD] = 1;
     }
 
-    if((lrfs.get_side_value(LRF_BACK_SIDE))>= (LRF_SHORT_MAX_DIST-TILE_WIDTH-100)) {
+    if(((lrfs.get_side_value(6))>= (LRF_SHORT_MAX_DIST-TILE_WIDTH-100)) || ((lrfs.get_side_value(7))>= (LRF_SHORT_MAX_DIST-TILE_WIDTH-100))) {
       target_dis_bad[BACK_BAD] = 1;
     }
 
-    if((lrfs.get_side_value(LRF_FRONT_LONG_SIDE) >= LRF_LONG_MAX_DIST)
-    || (lrfs.get_side_value(LRF_FRONT_LONG_SIDE) <= LRF_LONG_INVALID_DIST)) {
+    if((lrfs.get_side_value(8) >= LRF_LONG_MAX_DIST)
+    || (lrfs.get_side_value(LRF_FRONT_LONG_SIDE) <= LRF_LONG_INVALID_DIST)
+    || (lrfs.get_side_value(9) >= LRF_LONG_MAX_DIST)) {
       target_dis_bad[LONG_BAD] = 1;
     }
 
@@ -560,7 +557,7 @@ void state_left() {
   }
   
   // ---------------- Function ----------------
-  movement_turning_corrected(-TURN_SPEED); 
+  movement_turning(-TURN_SPEED); 
 }
 
 
@@ -596,7 +593,7 @@ void state_right() {
   }
   
   // ---------------- Function ----------------
-  movement_turning_corrected(TURN_SPEED); 
+  movement_turning(TURN_SPEED); 
 }
 
 
@@ -775,18 +772,22 @@ void state_black_tile() {
     target_dis_bad[BACK_BAD] = 0;
     target_dis_bad[LONG_BAD] = 0;
 
-    if((lrfs.get_side_value(LRF_FRONT_SHORT_SIDE))>= LRF_SHORT_MAX_DIST-100) {
+    if((lrfs.get_value(0) >= (LRF_SHORT_MAX_DIST - 100))||(lrfs.get_value(1) >= (LRF_SHORT_MAX_DIST - 100))) {
       target_dis_bad[FRONT_BAD] = 1;
     }
-    if((lrfs.get_side_value(LRF_BACK_SIDE))>= LRF_SHORT_MAX_DIST-100) {
+
+    if(((lrfs.get_side_value(6))>= (LRF_SHORT_MAX_DIST-TILE_WIDTH-100)) || ((lrfs.get_side_value(7))>= (LRF_SHORT_MAX_DIST-TILE_WIDTH-100))) {
       target_dis_bad[BACK_BAD] = 1;
     }
-    if(((lrfs.get_side_value(LRF_FRONT_SHORT_SIDE))>= LRF_LONG_MAX_DIST) || 
-    (((lrfs.get_side_value(LRF_FRONT_SHORT_SIDE))<= LRF_LONG_INVALID_DIST))) {
+
+    if((lrfs.get_side_value(8) >= LRF_LONG_MAX_DIST)
+    || (lrfs.get_side_value(LRF_FRONT_LONG_SIDE) <= LRF_LONG_INVALID_DIST)
+    || (lrfs.get_side_value(9) >= LRF_LONG_MAX_DIST)) {
       target_dis_bad[LONG_BAD] = 1;
     }
 
-    if(!(target_dis_bad[BACK_BAD])) { // back short are valid
+
+     if(!(target_dis_bad[BACK_BAD])) { // back short are valid
       target_distance_back = (lrfs.get_side_value(LRF_BACK_SIDE)) + 
       (300 - ((lrfs.get_side_value(LRF_BACK_SIDE)) % 300) + (300 - ROBOT_LENGTH) / 2);
 
@@ -1348,7 +1349,7 @@ void loop() {
   camera_data[CAM_RIGHT] = camera_right.process_data((lrfs.get_value(4)), (lrfs.get_value(5)));
   
 
-  // colour_sensor.update(); // TURN ON ++++++++++++++++++++++++++++++++++
+  colour_sensor.update(); // TURN ON ++++++++++++++++++++++++++++++++++
 
   Serial.print(camera_data[0]); Serial.print(" "); Serial.println(camera_data[1]);
 
