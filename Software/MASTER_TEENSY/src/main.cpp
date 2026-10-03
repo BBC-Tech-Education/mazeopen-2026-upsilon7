@@ -216,7 +216,7 @@ uint8_t distance_conditions(uint8_t direction) {
 
 }
 
-bool black_tile_distance_reached()
+uint8_t black_tile_distance_reached()
 {
     uint16_t front_dist = front_lrf();
     uint16_t back_dist = lrfs.get_side_value(LRF_BACK_SIDE);
@@ -224,16 +224,16 @@ bool black_tile_distance_reached()
     if (!target_dis_bad[BACK_BAD] && back_dist != 0 &&
         back_dist < LRF_SHORT_MAX_DIST) {
 
-        return back_dist >= target_distance_back;
+        return back_dist <= target_distance_back;
     }
 
     if (!target_dis_bad[FRONT_BAD] && front_dist != 0 &&
         front_dist < LRF_SHORT_MAX_DIST) {
 
-        return front_dist <= target_distance;
+        return front_dist >= target_distance;
     }
 
-    return false;
+    return 0;
 }
 
 
