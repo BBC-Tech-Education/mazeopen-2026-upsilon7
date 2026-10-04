@@ -151,11 +151,32 @@ void movement_turning(int speed) {
 }
 
 
-void movement_turning_corrected(int speed) {
-  float angle = bno.x_bearing_180();
-  motors.move((speed + angle*ANGLE_CONSTANT), -(speed +angle*ANGLE_CONSTANT));  
-}
+void movement_turning_corrected(float min_speed) {
+    float angle = fabs(bno.x_angle_diff());
 
+    const float MAX_SPEED = 230.0f;
+    const float SLOW_ANGLE = 45.0f;
+
+    float min_abs_speed = fabs(min_speed);
+
+    float ratio = angle / SLOW_ANGLE;
+    ratio = constrain(ratio, 0.0f, 1.0f);
+
+    // Far from target = fast
+    // Close to target = slow
+    float speed = min_abs_speed +
+                  (MAX_SPEED - min_abs_speed) * ratio * ratio;
+
+    speed = constrain(speed, min_abs_speed, MAX_SPEED);
+
+    // Preserve the direction of the input
+    if (min_speed > 0) {
+        motors.move_float(speed, -speed);
+    } 
+    else {
+        motors.move_float(-speed, speed);
+    }
+}
 
 
 // ---------------------------------- Lrf ----------------------------------
@@ -543,7 +564,8 @@ void state_forward() {
    || (!(state_data & BMSK_S_SWITCH_TILE) && lrfs.get_side_value(LRF_BACK_SIDE) >= average_distance_back)) { //haven't switched tile yet, lrf is telling I've moved
     state_data |= BMSK_S_SWITCH_TILE;
     maze_map.switch_current_tile();
-    past_victims = maze_map.victims(); //check if victims have been saved
+    //past_victims = maze_map.victims(); //check if victims have been saved
+    past_victims = 0;
   }
 }
 
@@ -709,7 +731,7 @@ void state_mapping() {
 
     past_states.push_back(MAPPING);
     state_data &= ~BMSK_S_NEW_STATE;
-
+    
     delay(200);
     lrfs.update();
     colour_sensor.update();
@@ -726,12 +748,9 @@ void state_mapping() {
     current_state = RESET_SWITCH;
     state_data |= BMSK_S_NEW_STATE;
 
-  } else if((state_data & BMSK_S_VICTIM_FOUND) && !past_victims) {
-    current_state = VICTIM;
-    state_data |= BMSK_S_NEW_STATE;
-
-  }  else if (state_data & BMSK_S_MAPPING_COMPLETED) { //mapping function completed
+  } else if (state_data & BMSK_S_MAPPING_COMPLETED) { //mapping function completed
     state_data &= ~BMSK_S_BLUE_TILE_DONE;
+    //past_victims = 0;
 
     if (next_state == 0) { //mapping says to move left
       current_state = LEFT;
@@ -751,7 +770,13 @@ void state_mapping() {
       state_data |= BMSK_S_NEW_STATE;
     }
     state_data &= ~BMSK_S_MAPPING_COMPLETED;
-  }
+
+  } else if((state_data & BMSK_S_VICTIM_FOUND) && !past_victims) {
+    current_state = VICTIM;
+    state_data |= BMSK_S_NEW_STATE;
+    past_victims = 1;
+
+  }  
 
   if(state_data & BMSK_S_NEW_STATE){
     return;
@@ -769,13 +794,14 @@ void state_mapping() {
 
   for (uint8_t i = 0; i < 4; i++) {
       if(side_distances[i] > 300) { // may need to be changed was 250
-        tile_available[i] = 1;
+        next_state = i;
+        break;
       }
-  }
-  
-  maze_map.create_tiles(bno.x_bearing_180(), tile_available);
-  next_state = maze_map.mapping_alg(bno.x_bearing_180());
-  
+      if(i == 3) {
+        next_state = 3;
+        break;
+      }
+  }  
   state_data |= BMSK_S_MAPPING_COMPLETED;
 }
 

@@ -70,7 +70,7 @@ private:
     float closest_bearing(float bearing); 
     std::array<uint8_t, 4> convert_true(float bearing, uint8_t tile_available[4]);
     std::array<int8_t, 4> convert_bering(float bearing, int8_t tile_available[4]);
-    std::array<int8_t, 4> convert_tiles(float bearing, uint8_t explored);
+    std::array<int8_t, 4> convert_tiles(uint8_t tile_id, float bearing, uint8_t explored);
 
     float tile_headings[4] = {-90.0, 0.0, 90.0, 180.0};
 

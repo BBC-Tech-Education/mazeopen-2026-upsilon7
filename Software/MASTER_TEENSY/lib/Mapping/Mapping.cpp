@@ -321,12 +321,12 @@ std::array<int8_t, 4> Mapping::convert_bering(float bearing, int8_t tile_availab
 
 
 
-std::array<int8_t, 4> Mapping::convert_tiles(float bearing, uint8_t explored = 1){
+std::array<int8_t, 4> Mapping::convert_tiles(uint8_t tile_id, float bearing, uint8_t explored = 1){
     int8_t current_tiles[4] = {
-        ((int8_t)(map[current_tile_id].left)), 
-        ((int8_t)(map[current_tile_id].front)),
-        ((int8_t)(map[current_tile_id].right)), 
-        ((int8_t)(map[current_tile_id].back))};
+        ((int8_t)(map[tile_id].left)), 
+        ((int8_t)(map[tile_id].front)),
+        ((int8_t)(map[tile_id].right)), 
+        ((int8_t)(map[tile_id].back))};
     
     for (int8_t i = 0; i < 4; i++) {
         if (current_tiles[i] >= 0) {
@@ -824,6 +824,7 @@ uint8_t Mapping::mapping_alg(float bearing)
     }
     
 
+    
     // 4. Back track to last tile
     if(past_tiles_mapping.size() > 1) {
         next_tile_id = past_tiles_mapping[past_tiles_mapping.size() -2];
