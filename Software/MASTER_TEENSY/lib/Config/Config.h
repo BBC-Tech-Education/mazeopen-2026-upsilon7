@@ -36,14 +36,14 @@
 
 
 // ----------------- States -----------------
-#define PRINTS_ALL_STATE 0
+#define PRINTS_ALL_STATE 1
 #define PRINTS_STATE_DATA 0
 
 #define DEBUG_STATE_DATA (PRINTS_STATE_DATA || PRINTS_GENERAL || PRINTS_ALL_STATE)
 
 
 // ----------------- Mapping -----------------
-#define PRINTS_ALL_MAPPING 0
+#define PRINTS_ALL_MAPPING 1
 
 #define PRINTS_CREATE_TILE 0
 #define PRINTS_CURRENT_TILE 0
@@ -108,18 +108,19 @@
 
 
 // ================================== SPEEDS ==================================
-#define FORWARD_SPEED 100
-#define TURN_SPEED 100
-#define BACK_SPEED 70
+#define FORWARD_SPEED 150 // was 100
+#define TURN_SPEED 170 // was 100
+#define BACK_SPEED 170 // was 70
 #define TILE_TIME (2800/300) // ms @100 * 1.2
+#define ANGLE_CONSTANT 1.2
 
 
 
 
 // ================================ DIMENSIONS ================================
 #define TILE_WIDTH 300
-#define ROBOT_LENGTH 155 // mm
-#define ROBOT_WIDTH 107 // mm
+#define ROBOT_LENGTH 158 // mm
+#define ROBOT_WIDTH 100 // mm
 #define ROBOT_HEIGHT 120 // mm
 #define ROBOT_LRFCX 39 // mm and fix
 
@@ -146,6 +147,10 @@
 
 #define TILE_ALIGNMENT 200
 
+#define FRONT_BAD 0
+#define BACK_BAD 1
+#define LONG_BAD 2
+
 
 // ----------------- Colour Constants -----------------
 #define COLOUR_NUM 4
@@ -157,7 +162,7 @@
 
 // ----------------- Ramp Constants -----------------
 #define RAMP_TOL_UP 10
-#define RAMP_TOL_DOWN 6
+#define RAMP_TOL_DOWN 8 // was 6
 
 #define RAMP_DIR      0
 #define RAMP_DIS      1
@@ -176,6 +181,7 @@
 // ----------------- Camera Constants -----------------
 #define CAM_LEFT  0
 #define CAM_RIGHT 1
+#define LRF_DIFF 1.5
 
 
 // ----------------- Movement Constants -----------------
