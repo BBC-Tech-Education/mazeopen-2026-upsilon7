@@ -112,7 +112,7 @@
 #define TURN_SPEED 170 // was 100
 #define BACK_SPEED 170 // was 70
 #define TILE_TIME (2800/300) // ms @100 * 1.2
-#define ANGLE_CONSTANT 1/45
+#define ANGLE_CONSTANT 1.2
 
 
 
@@ -146,6 +146,10 @@
 #define LRF_FRONT_LONG_SIDE 4
 
 #define TILE_ALIGNMENT 200
+
+#define FRONT_BAD 0
+#define BACK_BAD 1
+#define LONG_BAD 2
 
 
 // ----------------- Colour Constants -----------------
