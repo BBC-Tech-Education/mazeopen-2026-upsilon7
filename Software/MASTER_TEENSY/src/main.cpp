@@ -117,7 +117,7 @@ Switch reset_switch;
 Servo_Motor dropper;
 
 Mapping maze_map;
-PID motor_PID = PID(12.0f,0.0f,2.4f); //8,0,1.6
+PID motor_PID = PID(12.0f,0.0f,2.8f); //8,0,1.6
 
 
 
